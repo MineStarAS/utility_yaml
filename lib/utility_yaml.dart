@@ -5,7 +5,20 @@ import 'package:yaml/yaml.dart';
 class YamlConfiguration {
   YamlConfiguration();
 
-  YamlConfiguration.fromMap(this._yamlMap);
+  YamlConfiguration.fromYamlMap(YamlMap yamlMap) {
+    try {
+      final Map<String, dynamic> map = {};
+
+      yamlMap.forEach((key, value) {
+        map[key] = value;
+      });
+
+      _yamlMap = map;
+    } catch (e) {
+      print(e);
+      _yamlMap = {};
+    }
+  }
 
   YamlConfiguration.loadFile(File file) {
     try {
