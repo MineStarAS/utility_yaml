@@ -6,12 +6,19 @@ This is just a packages that lets me use YamlMap in a way I'm comfortable with.
 You need a [Yaml](https://pub.dev/packages/yaml) package to use it.
 
 ```dart
+import 'package:utility_yaml/utility_yaml.dart';
+
 main() {
-  final file = File('assets/config.yml');
-  final yaml = YamlConfiguration.loadFile(file);
+  final yaml = YamlConfiguration.loadPath('example/config.yml');
+  print(yaml.getString('string'));
+  print(yaml.getInt('int'));
+  print(yaml.getDouble('double'));
+  print(yaml.getBoolean('boolean'));
+  print(yaml.getList('list'));
+  print(yaml.getMap('map'));
 
-  yaml.put('language', 'en');
+  yaml.put('copy', [1, 2, 3, 4, 5]);
 
-  yaml.save(file);
+  yaml.saveToPath('example/configCopy.yml');
 }
 ```
