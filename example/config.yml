@@ -1,0 +1,12 @@
+string: This is string
+int: 123
+double: 123.456
+boolean: true
+list:
+  - aaa
+  - bbb
+  - ccc
+map:
+  a: ant
+  b: bear
+  c: cat
