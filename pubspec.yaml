@@ -1,7 +1,7 @@
 name: utility_yaml
-description: A sample command-line application.
-version: 1.0.0
-# homepage: https://www.example.com
+description: This is just a packages that lets me use YamlMap in a way I'm comfortable with.
+version: 1.0.1
+repository: https://github.com/MineStarAS/utility_yaml
 
 environment:
   sdk: '>=2.17.6 <3.0.0'

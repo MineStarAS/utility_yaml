@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 
 class YamlConfiguration {
-  YamlConfiguration(this._yamlMap);
+  YamlConfiguration();
 
-  YamlConfiguration.empty() {
-    _yamlMap = {};
-  }
+  YamlConfiguration.fromMap(this._yamlMap);
 
   YamlConfiguration.loadFile(File file) {
     try {
@@ -27,7 +25,7 @@ class YamlConfiguration {
     }
   }
 
-  YamlConfiguration.loadFilePath(String path) {
+  YamlConfiguration.loadPath(String path) {
     final file = File(path);
     try {
       final yamlData = file.readAsStringSync();
@@ -47,6 +45,48 @@ class YamlConfiguration {
   }
 
   late final Map<String, dynamic> _yamlMap;
+
+  ///Get Field
+  Set<String> keys() {
+    return _yamlMap.keys.toSet();
+  }
+
+  Map<String, String> keysType() {
+    final Map<String, String> map = {};
+    for (var key in _yamlMap.keys) {
+      if (!keyContains(key)) {
+        map[key] = 'null';
+        continue;
+      }
+      if (isMap(key)) {
+        map[key] = 'Map';
+        continue;
+      }
+      if (isList(key)) {
+        map[key] = 'List';
+        continue;
+      }
+      if (isBoolean(key)) {
+        map[key] = 'Boolean';
+        continue;
+      }
+      if (isInt(key)) {
+        map[key] = 'Int';
+        continue;
+      }
+      if (isDouble(key)) {
+        map[key] = 'Double';
+        continue;
+      }
+      if (isString(key)) {
+        map[key] = 'String';
+        continue;
+      }
+      map[key] = 'Unknown';
+      continue;
+    }
+    return map;
+  }
 
   ///Check Functions
   bool keyContains(String key) {
@@ -152,6 +192,11 @@ class YamlConfiguration {
 
   ///Save Function
   void save(File file) {
+    file.writeAsStringSync(_convertYamlFile());
+  }
+
+  void saveToPath(String path) {
+    final file = File(path);
     file.writeAsStringSync(_convertYamlFile());
   }
 
