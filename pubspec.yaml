@@ -1,6 +1,6 @@
 name: utility_yaml
 description: This is just a packages that lets me use YamlMap in a way I'm comfortable with.
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/MineStarAS/utility_yaml
 
 environment:
