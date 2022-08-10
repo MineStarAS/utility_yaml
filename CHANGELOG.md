@@ -1,3 +1,6 @@
+## 1.0.3
+- YamlConfiguration.fromYamlMap - edited.
+
 ## 1.0.2
 - YamlConfiguration.fromMap - Delete
 - YamlConfiguration.fromYamlMap - Add

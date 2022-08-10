@@ -5,11 +5,16 @@ import 'package:yaml/yaml.dart';
 class YamlConfiguration {
   YamlConfiguration();
 
-  YamlConfiguration.fromYamlMap(YamlMap yamlMap) {
+  YamlConfiguration.fromYamlMap(YamlMap? yamlMap) {
     try {
       final Map<String, dynamic> map = {};
 
-      yamlMap.forEach((key, value) {
+      if (yamlMap == null) {
+        _yamlMap = {};
+        return;
+      }
+
+      yamlMap!.forEach((key, value) {
         map[key] = value;
       });
 
