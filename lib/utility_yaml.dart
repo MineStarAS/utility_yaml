@@ -14,7 +14,7 @@ class YamlConfiguration {
         return;
       }
 
-      yamlMap!.forEach((key, value) {
+      yamlMap.forEach((key, value) {
         map[key] = value;
       });
 
