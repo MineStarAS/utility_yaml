@@ -3,8 +3,6 @@ This is just a packages that lets me use YamlMap in a way I'm comfortable with.
 ---
 ## Usage
 
-You need a [Yaml](https://pub.dev/packages/yaml) package to use it.
-
 ```dart
 import 'package:utility_yaml/utility_yaml.dart';
 
