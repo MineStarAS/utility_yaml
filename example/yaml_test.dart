@@ -1,10 +1,15 @@
-import 'package:utility_yaml/utility_yaml.dart';
+import 'package:utility_yaml/yamlMapConverter.dart';
+import 'package:utility_yaml/yamlble.dart';
 import 'package:yaml/src/yaml_node.dart';
 
 main() {
-  final test1 = TestClass(false, 1, 2.3, 'ttt', {'a': 111, 'b': 222, 'c': 333});
-  print(test1.asString());
-  test1.intMap['d'] = 444;
+  final test = TestClass(false, 1, 2.3, 'ttt', {'a': 111, 'b': 222, 'c': 333});
+
+  final yamlMap = test.toYamlMap();
+
+  final map = YamlMapConverter(yamlMap).toMap<Map>();
+
+  print(map);
 }
 
 class TestClass extends Yamlble {
@@ -16,14 +21,8 @@ class TestClass extends Yamlble {
   late final String string;
   late final Map<String, int> intMap;
 
-  @override
-  TestClass.ttt() : super.ttt() {
-
-  }
-
-  @override
-  FromString fromString(String asString) {
-    final yamlMap = asStringToYamlMap(asString);
+  Yamlble fromString(String asString) {
+    final yamlMap = loadYamlMap(asString);
     if (yamlMap == null) {
       throw Exception('\'asString\' is not Map\'s string.');
     }
@@ -53,7 +52,7 @@ class TestClass extends Yamlble {
     map['d'] = d;
     map['string'] = string;
     map['intMap'] = intMap;
-    final yamlMap = asStringToYamlMap(map.toString());
+    final yamlMap = loadYamlMap(map.toString());
     if (yamlMap != null) return yamlMap;
     return YamlMap();
   }

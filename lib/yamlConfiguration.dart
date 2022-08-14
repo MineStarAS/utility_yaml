@@ -204,7 +204,7 @@ class YamlConfiguration {
   }
 
   ///Put Functions
-  void put(String key, Object value) {
+  void put(String key, dynamic value) {
     _yamlMap[key] = value;
   }
 
@@ -257,33 +257,4 @@ class YamlConfiguration {
 
     return string;
   }
-}
-
-abstract class Yamlble implements FromString {
-
-  Yamlble.ttt();
-
-  YamlMap toYamlMap();
-
-  Yamlble fromYamlMap(YamlMap yamlMap);
-
-  @override
-  String asString() {
-    return toYamlMap().toString();
-  }
-
-  YamlMap? asStringToYamlMap(String asString) {
-    try {
-      return loadYaml(asString);
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-}
-
-abstract class FromString {
-  String asString();
-
-  FromString fromString(String asString);
 }
