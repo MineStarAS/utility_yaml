@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 
 class YamlConfiguration {
-  YamlConfiguration();
+  ///Constructor Function
+  YamlConfiguration() {
+    _yamlMap = {};
+  }
 
   YamlConfiguration.fromYamlMap(YamlMap? yamlMap) {
     try {
@@ -15,13 +18,18 @@ class YamlConfiguration {
       }
 
       yamlMap.forEach((key, value) {
-        map[key] = value;
+        if (value is YamlMap) {
+          map[key] = _convertDynamicMap(value.value);
+        } else if (value is YamlList) {
+          map[key] = _convertDynamicList(value);
+        } else {
+          map[key] = value;
+        }
       });
 
       _yamlMap = map;
     } catch (e) {
-      print(e);
-      _yamlMap = {};
+      rethrow;
     }
   }
 
@@ -33,13 +41,18 @@ class YamlConfiguration {
       final Map<String, dynamic> map = {};
 
       yamlMap.forEach((key, value) {
-        map[key] = value;
+        if (value is YamlMap) {
+          map[key] = _convertDynamicMap(value.value);
+        } else if (value is YamlList) {
+          map[key] = _convertDynamicList(value);
+        } else {
+          map[key] = value;
+        }
       });
 
       _yamlMap = map;
     } catch (e) {
-      print(e);
-      _yamlMap = {};
+      rethrow;
     }
   }
 
@@ -52,16 +65,50 @@ class YamlConfiguration {
       final Map<String, dynamic> map = {};
 
       yamlMap.forEach((key, value) {
-        map[key] = value;
+        if (value is YamlMap) {
+          map[key] = _convertDynamicMap(value.value);
+        } else if (value is YamlList) {
+          map[key] = _convertDynamicList(value);
+        } else {
+          map[key] = value;
+        }
       });
 
       _yamlMap = map;
     } catch (e) {
-      print(e);
-      _yamlMap = {};
+      rethrow;
     }
   }
 
+  Map<String, dynamic> _convertDynamicMap(Map<dynamic, dynamic> map) {
+    final newMap = <String, dynamic>{};
+    map.forEach((key, value) {
+      if (value is YamlMap) {
+        newMap[key] = _convertDynamicMap(value.value);
+      }else if (value is YamlList) {
+        newMap[key] = _convertDynamicList(value);
+      } else {
+        newMap[key] = value;
+      }
+    });
+    return newMap;
+  }
+
+  List<dynamic> _convertDynamicList(YamlList list) {
+    final newList = <dynamic>[];
+    for (final value in list) {
+      if (value is YamlMap) {
+        newList.add(_convertDynamicMap(value));
+      } else if (value is YamlList) {
+        newList.add(_convertDynamicList(value));
+      } else {
+        newList.add(value);
+      }
+    }
+    return newList;
+  }
+
+  ///Field
   late final Map<String, dynamic> _yamlMap;
 
   ///Get Field
@@ -165,7 +212,7 @@ class YamlConfiguration {
   bool isMap(String key) {
     try {
       if (!keyContains(key)) return false;
-      _yamlMap[key] as Map<dynamic, dynamic>;
+      _yamlMap[key] as Map<String, dynamic>;
       return true;
     } catch (_) {
       return false;
@@ -198,9 +245,21 @@ class YamlConfiguration {
     return _yamlMap[key];
   }
 
-  YamlMap? getMap(String key) {
+  Map<String, dynamic>? getMap(String key) {
     if (!isMap(key)) return null;
     return _yamlMap[key];
+  }
+
+  Map<String, T>? getTypeMap<T>(String key) {
+    if (!isMap(key)) return null;
+
+    final newMap = <String, T>{};
+    _yamlMap[key].forEach((key, value) {
+      if (value is T) {
+        newMap[key.toString()] = value;
+      }
+    });
+    return newMap;
   }
 
   ///Put Functions
@@ -209,7 +268,7 @@ class YamlConfiguration {
   }
 
   ///Save Function
-  void save(File file) {
+  void saveToFile(File file) {
     file.writeAsStringSync(_convertYamlFile());
   }
 
@@ -231,13 +290,18 @@ class YamlConfiguration {
 
     map.forEach((key, value) {
       if (value is Map<dynamic, dynamic>) {
-        string += '$key:\n';
+        string += '$tab$key:\n';
         string += '${_convertMap(value, order + 1)}\n';
       } else if (value is List<dynamic>) {
-        string += '$key:\n';
+        string += '$tab$key:\n';
         string += '${_convertList(value, order + 1)}\n';
       } else {
         string += '$tab$key: $value\n';
+      }
+      if (map.keys.last == key) {
+        final finish = '###F###';
+        string += finish;
+        string = string.replaceAll('\n$finish', '');
       }
     });
 
@@ -252,7 +316,21 @@ class YamlConfiguration {
     }
 
     for (var value in list) {
-      string += '$tab- $value\n';
+      if (value is Map<dynamic, dynamic>) {
+        string += '$tab- $value:\n';
+        string += '${_convertMap(value, order + 1)}\n';
+      } else if (value is List<dynamic>) {
+        string += '$tab- $value:\n';
+        string += '${_convertList(value, order + 1)}\n';
+      } else {
+        string += '$tab- $value\n';
+      }
+
+      if (list.last == value) {
+        final finish = '###F###';
+        string += finish;
+        string = string.replaceAll('\n$finish', '');
+      }
     }
 
     return string;
