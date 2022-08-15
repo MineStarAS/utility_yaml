@@ -1,33 +1,36 @@
 import 'dart:io';
+import 'dart:mirrors';
 
+import 'package:utility_yaml/yamlble.dart';
 import 'package:yaml/yaml.dart';
 
+/// This class is makes it easy to load and edit yaml files.
 class YamlConfiguration {
   ///Constructor Function
   YamlConfiguration() {
     _yamlMap = {};
   }
 
+  /// !!!!! WARNING !!!!!
+  /// If the return value of toString() is not simple
+  /// because the key is converted to toString(),
+  /// problems may occur when saving to a file.
+  YamlConfiguration.fromMap(Map<dynamic, dynamic> map) {
+    try {
+      _yamlMap = _convertMap(map);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   YamlConfiguration.fromYamlMap(YamlMap? yamlMap) {
     try {
-      final Map<String, dynamic> map = {};
-
       if (yamlMap == null) {
         _yamlMap = {};
         return;
       }
 
-      yamlMap.forEach((key, value) {
-        if (value is YamlMap) {
-          map[key] = _convertDynamicMap(value.value);
-        } else if (value is YamlList) {
-          map[key] = _convertDynamicList(value);
-        } else {
-          map[key] = value;
-        }
-      });
-
-      _yamlMap = map;
+      _yamlMap = _convertMap(yamlMap);
     } catch (e) {
       rethrow;
     }
@@ -38,19 +41,7 @@ class YamlConfiguration {
       final yamlData = file.readAsStringSync();
       final YamlMap yamlMap = loadYaml(yamlData);
 
-      final Map<String, dynamic> map = {};
-
-      yamlMap.forEach((key, value) {
-        if (value is YamlMap) {
-          map[key] = _convertDynamicMap(value.value);
-        } else if (value is YamlList) {
-          map[key] = _convertDynamicList(value);
-        } else {
-          map[key] = value;
-        }
-      });
-
-      _yamlMap = map;
+      _yamlMap = _convertMap(yamlMap);
     } catch (e) {
       rethrow;
     }
@@ -62,45 +53,33 @@ class YamlConfiguration {
       final yamlData = file.readAsStringSync();
       final YamlMap yamlMap = loadYaml(yamlData);
 
-      final Map<String, dynamic> map = {};
-
-      yamlMap.forEach((key, value) {
-        if (value is YamlMap) {
-          map[key] = _convertDynamicMap(value.value);
-        } else if (value is YamlList) {
-          map[key] = _convertDynamicList(value);
-        } else {
-          map[key] = value;
-        }
-      });
-
-      _yamlMap = map;
+      _yamlMap = _convertMap(yamlMap);
     } catch (e) {
       rethrow;
     }
   }
 
-  Map<String, dynamic> _convertDynamicMap(Map<dynamic, dynamic> map) {
+  Map<String, dynamic> _convertMap(Map<dynamic, dynamic> map) {
     final newMap = <String, dynamic>{};
     map.forEach((key, value) {
       if (value is YamlMap) {
-        newMap[key] = _convertDynamicMap(value.value);
-      }else if (value is YamlList) {
-        newMap[key] = _convertDynamicList(value);
+        newMap[key.toString()] = _convertMap(value.value);
+      } else if (value is YamlList) {
+        newMap[key.toString()] = _convertList(value);
       } else {
-        newMap[key] = value;
+        newMap[key.toString()] = value;
       }
     });
     return newMap;
   }
 
-  List<dynamic> _convertDynamicList(YamlList list) {
+  List<dynamic> _convertList(YamlList list) {
     final newList = <dynamic>[];
     for (final value in list) {
       if (value is YamlMap) {
-        newList.add(_convertDynamicMap(value));
+        newList.add(_convertMap(value));
       } else if (value is YamlList) {
-        newList.add(_convertDynamicList(value));
+        newList.add(_convertList(value));
       } else {
         newList.add(value);
       }
@@ -108,50 +87,10 @@ class YamlConfiguration {
     return newList;
   }
 
+
+
   ///Field
   late final Map<String, dynamic> _yamlMap;
-
-  ///Get Field
-  Set<String> keys() {
-    return _yamlMap.keys.toSet();
-  }
-
-  Map<String, String> keysType() {
-    final Map<String, String> map = {};
-    for (var key in _yamlMap.keys) {
-      if (!keyContains(key)) {
-        map[key] = 'null';
-        continue;
-      }
-      if (isMap(key)) {
-        map[key] = 'Map';
-        continue;
-      }
-      if (isList(key)) {
-        map[key] = 'List';
-        continue;
-      }
-      if (isBoolean(key)) {
-        map[key] = 'Boolean';
-        continue;
-      }
-      if (isInt(key)) {
-        map[key] = 'Int';
-        continue;
-      }
-      if (isDouble(key)) {
-        map[key] = 'Double';
-        continue;
-      }
-      if (isString(key)) {
-        map[key] = 'String';
-        continue;
-      }
-      map[key] = 'Unknown';
-      continue;
-    }
-    return map;
-  }
 
   ///Check Functions
   bool keyContains(String key) {
@@ -220,6 +159,47 @@ class YamlConfiguration {
   }
 
   ///Get Functions
+  Set<String> keys() {
+    return _yamlMap.keys.toSet();
+  }
+
+  Map<String, String> keysType() {
+    final Map<String, String> map = {};
+    for (var key in _yamlMap.keys) {
+      if (!keyContains(key)) {
+        map[key] = 'null';
+        continue;
+      }
+      if (isMap(key)) {
+        map[key] = 'Map';
+        continue;
+      }
+      if (isList(key)) {
+        map[key] = 'List';
+        continue;
+      }
+      if (isBoolean(key)) {
+        map[key] = 'Boolean';
+        continue;
+      }
+      if (isInt(key)) {
+        map[key] = 'Int';
+        continue;
+      }
+      if (isDouble(key)) {
+        map[key] = 'Double';
+        continue;
+      }
+      if (isString(key)) {
+        map[key] = 'String';
+        continue;
+      }
+      map[key] = 'Unknown';
+      continue;
+    }
+    return map;
+  }
+
   String? getString(String key) {
     if (!isString(key)) return null;
     return _yamlMap[key];
@@ -250,20 +230,23 @@ class YamlConfiguration {
     return _yamlMap[key];
   }
 
-  Map<String, T>? getTypeMap<T>(String key) {
-    if (!isMap(key)) return null;
-
-    final newMap = <String, T>{};
-    _yamlMap[key].forEach((key, value) {
-      if (value is T) {
-        newMap[key.toString()] = value;
-      }
-    });
-    return newMap;
+  /// !!!!! Be Careful !!!!!
+  /// If the [Type] value is not specified or it is not [Yamlble], an exception is thrown.
+  T getYamlble<T>(String key) {
+    try {
+      return Yamlble.newInstance<T>(_yamlMap[key]);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   ///Put Functions
+  /// If it is not [Yamlble], it is saved using toString() when saving to a file.
   void put(String key, dynamic value) {
+    if (value is Yamlble) {
+      _yamlMap[key] = value.toYaml();
+      return;
+    }
     _yamlMap[key] = value;
   }
 
@@ -278,28 +261,38 @@ class YamlConfiguration {
   }
 
   String _convertYamlFile() {
-    return _convertMap(_yamlMap, 0);
+    return _convertMapString(_yamlMap, 0);
   }
 
-  String _convertMap(Map<dynamic, dynamic> map, final int order) {
+  String _convertMapString(Map<dynamic, dynamic> map, final int order) {
+
     String string = '';
-    var tab = '';
+    String tab = '';
     for (int i = 0; i < order; i++) {
       tab += '  ';
     }
 
     map.forEach((key, value) {
+      //is Map
       if (value is Map<dynamic, dynamic>) {
         string += '$tab$key:\n';
-        string += '${_convertMap(value, order + 1)}\n';
+        string += '${_convertMapString(value, order + 1)}\n';
+      //is List
       } else if (value is List<dynamic>) {
         string += '$tab$key:\n';
-        string += '${_convertList(value, order + 1)}\n';
+        string += '${_convertListString(value, order + 1)}\n';
+      //is Yamlble
+      } else if (value is Yamlble) {
+        string += '$tab$key:\n';
+        string += '${_convertMapString(value.toYaml(), order + 1)}\n';
+      //is another
       } else {
         string += '$tab$key: $value\n';
       }
+
+      //delete final line break
       if (map.keys.last == key) {
-        final finish = '###F###';
+        final finish = '#%&F&%#';
         string += finish;
         string = string.replaceAll('\n$finish', '');
       }
@@ -308,26 +301,36 @@ class YamlConfiguration {
     return string;
   }
 
-  String _convertList(List<dynamic> list, final int order) {
+  String _convertListString(List<dynamic> list, final int order) {
+
     String string = '';
-    var tab = '';
+    String tab = '';
     for (int i = 0; i < order; i++) {
       tab += '  ';
     }
 
+
     for (var value in list) {
+      //is Map
       if (value is Map<dynamic, dynamic>) {
         string += '$tab- $value:\n';
-        string += '${_convertMap(value, order + 1)}\n';
+        string += '${_convertMapString(value, order + 1)}\n';
+      //is List
       } else if (value is List<dynamic>) {
         string += '$tab- $value:\n';
-        string += '${_convertList(value, order + 1)}\n';
+        string += '${_convertListString(value, order + 1)}\n';
+      //is Yamlble
+      } else if (value is Yamlble) {
+        string += '$tab- $value:\n';
+        string += '${_convertMapString(value.toYaml(), order + 1)}\n';
+      //is another
       } else {
         string += '$tab- $value\n';
       }
 
+      //delete final line break
       if (list.last == value) {
-        final finish = '###F###';
+        final finish = '#%&F&%#';
         string += finish;
         string = string.replaceAll('\n$finish', '');
       }

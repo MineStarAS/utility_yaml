@@ -1,17 +1,28 @@
+## 1.1.0
+- [Abstract Class] Yamlble - Create
+- [Class] YamlConfiguration - Moved to yamlble_example.dart
+
+
+- [File] utility_yaml.dart - Delete
+- [File] example.dart - Renamed to yaml_configuration_example.dart
+- [File] yaml_configuration_example.dart - Added
+
 ## 1.0.4
-- YamlConfiguration.fromYamlMap - Fixed.
-- example files - Add
+- [Class] YamlConfiguration.fromYamlMap - Fixed
+
+
+- [File] example.dart - Create
 
 ## 1.0.3
-- YamlConfiguration.fromYamlMap - Edited
+- [Class] YamlConfiguration.fromYamlMap - Edited
 
 ## 1.0.2
-- YamlConfiguration.fromMap - Delete
-- YamlConfiguration.fromYamlMap - Add
+- [Class] YamlConfiguration.fromMap - Deleted
+- [Class] YamlConfiguration.fromYamlMap - Added
 
 ## 1.0.1
-- README.md - edited.
-- utility_yaml.dart - Edited
+- [File] README.md - Edited
+- [File] utility_yaml.dart - Edited
 
 ## 1.0.0
 - Initial version.

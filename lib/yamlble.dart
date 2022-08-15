@@ -1,7 +1,12 @@
 import 'dart:mirrors';
 
+///This abstract class allows conversion to a form that can be stored in a Yaml file.
 abstract class Yamlble {
-  ///Instance Function
+
+  /// !!!!! WARNING !!!!!
+  /// To use this function, the Yamlble class requires a constructor function called 'loadYaml'.
+  ///
+  /// This function allows you to new instance a Yamlble class stored in Yaml.
   static T newInstance<T>(Map yamlMap) {
     List<ParameterMirror> constructorParameters(ClassMirror classMirror) {
       final constructorMirror = classMirror.declarations[Symbol('$T.loadYaml')];
@@ -12,12 +17,11 @@ abstract class Yamlble {
       return (constructorMirror).parameters;
     }
 
-
-
     if (T.toString() == 'dynamic') {
       throw Exception('\'Type\' is missing or \'dynamic\'.\n'
           'Usage: Yamlble.newInstance<Type>(yamlMap)');
     }
+
     if (T.toString() != yamlMap['=='].toString()) throw Exception('\'yamlMap\' is not have \'==\' value.');
 
     final classMirror = reflectClass(T);
@@ -31,18 +35,10 @@ abstract class Yamlble {
       final value = yamlMap[symbolKey];
       if (value == null) throw Exception('\'yamlMap\' is not have \'$symbolKey\' value.');
 
-      print('${value.runtimeType}: ${parameter.type.typeArguments}');
-      print('${parameter.type.reflectedType}');
-
-      final typeSymbol = parameter.type.simpleName;
-
-      if (typeSymbol == Symbol('Map')) {
-        final r = reflectClass(parameter.type.reflectedType);
-
-        Map.from(value);
-
-        reflectType(key);
-        //TODO help me!
+      if (value is Map && value.containsKey('==')) {
+        final type = parameter.type.reflectedType;
+        valueList.add(Yamlble._newInstance(type, value));
+        continue;
       }
 
       valueList.add(value);
@@ -58,6 +54,51 @@ abstract class Yamlble {
     return newInstance;
   }
 
+  /// Used when a Yamlble class is required for
+  /// the constructor function of the Yamlble class in [newInstance].
+  static dynamic _newInstance(Type type, Map yamlMap) {
+    List<ParameterMirror> constructorParameters(ClassMirror classMirror) {
+      final constructorMirror = classMirror.declarations[Symbol('$type.loadYaml')];
+
+      if (constructorMirror == null) throw Exception('\'$type\' is not have \'loadYaml\' from constructor.');
+      if (constructorMirror is! MethodMirror) throw Exception('\'$type.loadYaml\' is not \'MethodMirror\'.');
+
+      return (constructorMirror).parameters;
+    }
+
+    if ('$type' != yamlMap['=='].toString()) throw Exception('\'yamlMap\' is not have \'==\' value.');
+
+    final classMirror = reflectClass(type);
+
+    final List<dynamic> valueList = [];
+
+    for (final parameter in constructorParameters(classMirror)) {
+      final symbol = parameter.simpleName;
+      final symbolKey = symbol.toString().replaceAll('Symbol("', '').replaceAll('")', '');
+
+      final value = yamlMap[symbolKey];
+      if (value == null) throw Exception('\'yamlMap\' is not have \'$symbolKey\' value.');
+
+      if (value is Map && value.containsKey('==')) {
+        final type = parameter.type.reflectedType;
+        valueList.add(Yamlble._newInstance(type, value));
+        continue;
+      }
+
+      valueList.add(value);
+    }
+
+    final dynamic newInstance;
+    try {
+      newInstance = classMirror.newInstance(Symbol('loadYaml'), valueList).reflectee;
+    } catch (e) {
+      rethrow;
+    }
+
+    return newInstance;
+  }
+
+  ///Convert to a [Map] format that can be stored in a Yaml file.
   Map<String, dynamic> toYaml() {
     final map = <String, dynamic>{};
 
@@ -90,5 +131,10 @@ abstract class Yamlble {
     }
 
     return parameters;
+  }
+
+  @override
+  String toString() {
+    return toYaml().toString();
   }
 }

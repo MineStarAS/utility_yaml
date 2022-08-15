@@ -1,4 +1,4 @@
-import 'package:utility_yaml/yamlConfiguration.dart';
+import 'package:utility_yaml/yaml_configuration.dart';
 
 main() {
   final yaml = YamlConfiguration.loadPath('example/config.yml');
