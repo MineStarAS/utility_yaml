@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:mirrors';
 
 import 'package:utility_yaml/yamlble.dart';
 import 'package:yaml/yaml.dart';
@@ -86,8 +85,6 @@ class YamlConfiguration {
     }
     return newList;
   }
-
-
 
   ///Field
   late final Map<String, dynamic> _yamlMap;
@@ -265,7 +262,6 @@ class YamlConfiguration {
   }
 
   String _convertMapString(Map<dynamic, dynamic> map, final int order) {
-
     String string = '';
     String tab = '';
     for (int i = 0; i < order; i++) {
@@ -277,15 +273,15 @@ class YamlConfiguration {
       if (value is Map<dynamic, dynamic>) {
         string += '$tab$key:\n';
         string += '${_convertMapString(value, order + 1)}\n';
-      //is List
+        //is List
       } else if (value is List<dynamic>) {
         string += '$tab$key:\n';
         string += '${_convertListString(value, order + 1)}\n';
-      //is Yamlble
+        //is Yamlble
       } else if (value is Yamlble) {
         string += '$tab$key:\n';
         string += '${_convertMapString(value.toYaml(), order + 1)}\n';
-      //is another
+        //is another
       } else {
         string += '$tab$key: $value\n';
       }
@@ -302,28 +298,26 @@ class YamlConfiguration {
   }
 
   String _convertListString(List<dynamic> list, final int order) {
-
     String string = '';
     String tab = '';
     for (int i = 0; i < order; i++) {
       tab += '  ';
     }
 
-
     for (var value in list) {
       //is Map
       if (value is Map<dynamic, dynamic>) {
         string += '$tab- $value:\n';
         string += '${_convertMapString(value, order + 1)}\n';
-      //is List
+        //is List
       } else if (value is List<dynamic>) {
         string += '$tab- $value:\n';
         string += '${_convertListString(value, order + 1)}\n';
-      //is Yamlble
+        //is Yamlble
       } else if (value is Yamlble) {
         string += '$tab- $value:\n';
         string += '${_convertMapString(value.toYaml(), order + 1)}\n';
-      //is another
+        //is another
       } else {
         string += '$tab- $value\n';
       }

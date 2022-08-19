@@ -2,7 +2,6 @@ import 'dart:mirrors';
 
 ///This abstract class allows conversion to a form that can be stored in a Yaml file.
 abstract class Yamlble {
-
   /// !!!!! WARNING !!!!!
   /// To use this function, the Yamlble class requires a constructor function called 'loadYaml'.
   ///

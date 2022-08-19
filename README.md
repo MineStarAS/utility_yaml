@@ -3,7 +3,7 @@ This is just a packages that lets me use YamlMap in a way I'm comfortable with.
 ---
 ## Usage
 
-> #### [YamlConfiguration](example/yaml_configuration_example.dart)
+> #### [YamlConfiguration](example/example.dart)
 ```dart
 import 'package:utility_yaml/utility_yaml.dart';
 

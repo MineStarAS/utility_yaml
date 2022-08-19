@@ -1,6 +1,6 @@
 /// Convert Map<dynamic, dynamic> to Map<K, V>.
 /// Key and Value that do not match are excluded.
-Map<K, V> filteringMap<K, V> (Map<dynamic, dynamic> map) {
+Map<K, V> filteringMap<K, V>(Map<dynamic, dynamic> map) {
   final newMap = <K, V>{};
 
   map.forEach((key, value) {
@@ -14,7 +14,7 @@ Map<K, V> filteringMap<K, V> (Map<dynamic, dynamic> map) {
 
 /// Convert Map<dynamic, dynamic> to Map<K, V>.
 /// Element that do not match are excluded.
-List<E> filteringList<E> (List<dynamic> list) {
+List<E> filteringList<E>(List<dynamic> list) {
   final newList = <E>[];
 
   for (final element in list) {
