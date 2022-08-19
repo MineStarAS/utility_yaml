@@ -25,7 +25,7 @@ main() {
 > #### [Yamlble](example/yamlble_example.dart)
 ```dart
 import 'package:utility_yaml/filtering.dart';
-import 'package:utility_yaml/yaml_configuration.dart';
+import 'package:utility_yaml/utility_yaml.dart';
 import 'package:utility_yaml/yamlble.dart';
 
 main() {

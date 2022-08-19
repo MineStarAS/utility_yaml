@@ -1,6 +1,5 @@
 import 'package:utility_yaml/filtering.dart';
-import 'package:utility_yaml/yaml_configuration.dart';
-import 'package:utility_yaml/yamlble.dart';
+import 'package:utility_yaml/utility_yaml.dart';
 
 main() {
   final path = 'example/yamlbleTest.yml';
