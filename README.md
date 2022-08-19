@@ -26,7 +26,6 @@ main() {
 ```dart
 import 'package:utility_yaml/filtering.dart';
 import 'package:utility_yaml/utility_yaml.dart';
-import 'package:utility_yaml/yamlble.dart';
 
 main() {
   final path = 'example/yamlbleTest.yml';
