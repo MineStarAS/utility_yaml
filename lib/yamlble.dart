@@ -10,8 +10,12 @@ abstract class Yamlble {
     List<ParameterMirror> constructorParameters(ClassMirror classMirror) {
       final constructorMirror = classMirror.declarations[Symbol('$T.loadYaml')];
 
-      if (constructorMirror == null) throw Exception('\'$T\' is not have \'loadYaml\' from constructor.');
-      if (constructorMirror is! MethodMirror) throw Exception('\'$T.loadYaml\' is not \'MethodMirror\'.');
+      if (constructorMirror == null) {
+        throw Exception('\'$T\' is not have \'loadYaml\' from constructor.');
+      }
+      if (constructorMirror is! MethodMirror) {
+        throw Exception('\'$T.loadYaml\' is not \'MethodMirror\'.');
+      }
 
       return (constructorMirror).parameters;
     }
@@ -32,7 +36,9 @@ abstract class Yamlble {
       final symbolKey = symbol.toString().replaceAll('Symbol("', '').replaceAll('")', '');
 
       final value = yamlMap[symbolKey];
-      if (value == null) throw Exception('\'yamlMap\' is not have \'$symbolKey\' value.');
+      if (value == null) {
+        throw Exception('\'yamlMap\' is not have \'$symbolKey\' value.');
+      }
 
       if (value is Map && value.containsKey('==')) {
         final type = parameter.type.reflectedType;
