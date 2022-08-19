@@ -1,3 +1,6 @@
+## 1.1.1
+- [File] yaml_configuration_example.dart - Renamed to example.dart
+
 ## 1.1.0
 - [Abstract Class] Yamlble - Create
 - [Class] YamlConfiguration - Moved to yamlble_example.dart
