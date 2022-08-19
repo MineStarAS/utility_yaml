@@ -1,6 +1,9 @@
+## 1.1.3
+- [Class] YamlConfiguration.fromYamlble - Added
+
 ## 1.1.2
-- [Abstract Class] Yamlble - formatted code
-- [Abstract Class] Yamlble - moved to utility_yaml.dart
+- [Abstract Class] Yamlble - Formatted code
+- [Abstract Class] Yamlble - Moved to utility_yaml.dart
 
 
 - [File] yaml_configuration.dart - Renamed to utility_yaml.dart

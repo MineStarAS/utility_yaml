@@ -13,6 +13,14 @@ class YamlConfiguration {
   /// If the return value of toString() is not simple
   /// because the key is converted to toString(),
   /// problems may occur when saving to a file.
+  YamlConfiguration.fromYamlble(Yamlble yamlble) {
+    try {
+      _yamlMap = _convertMap(yamlble.toYaml());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   YamlConfiguration.fromMap(Map<dynamic, dynamic> map) {
     try {
       _yamlMap = _convertMap(map);
