@@ -1,3 +1,6 @@
+## 1.1.4
+- [Class] yamlble.Yamlble - Moved
+- 
 ## 1.1.3
 - [Class] YamlConfiguration.fromYamlble - Added
 
