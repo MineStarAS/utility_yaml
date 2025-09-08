@@ -1,26 +1,12 @@
 import 'dart:io';
 
-import 'package:yaml/yaml.dart';
-
-import 'yamlble.dart';
+import "package:yaml/yaml.dart";
 
 /// This class is makes it easy to load and edit yaml files.
 class YamlConfiguration {
   ///Constructor Function
   YamlConfiguration() {
     _yamlMap = {};
-  }
-
-  /// !!!!! WARNING !!!!!
-  /// If the return value of toString() is not simple
-  /// because the key is converted to toString(),
-  /// problems may occur when saving to a file.
-  YamlConfiguration.fromYamlble(Yamlble yamlble) {
-    try {
-      _yamlMap = _convertMap(yamlble.toYaml());
-    } catch (e) {
-      rethrow;
-    }
   }
 
   YamlConfiguration.fromMap(Map<dynamic, dynamic> map) {
@@ -236,26 +222,6 @@ class YamlConfiguration {
     return _yamlMap[key];
   }
 
-  /// !!!!! Be Careful !!!!!
-  /// If the [Type] value is not specified or it is not [Yamlble], an exception is thrown.
-  T getYamlble<T>(String key) {
-    try {
-      return Yamlble.newInstance<T>(_yamlMap[key]);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  ///Put Functions
-  /// If it is not [Yamlble], it is saved using toString() when saving to a file.
-  void put(String key, dynamic value) {
-    if (value is Yamlble) {
-      _yamlMap[key] = value.toYaml();
-      return;
-    }
-    _yamlMap[key] = value;
-  }
-
   ///Save Function
   void saveToFile(File file) {
     file.writeAsStringSync(_convertYamlFile());
@@ -286,11 +252,6 @@ class YamlConfiguration {
       } else if (value is List<dynamic>) {
         string += '$tab$key:\n';
         string += '${_convertListString(value, order + 1)}\n';
-        //is Yamlble
-      } else if (value is Yamlble) {
-        string += '$tab$key:\n';
-        string += '${_convertMapString(value.toYaml(), order + 1)}\n';
-        //is another
       } else {
         string += '$tab$key: $value\n';
       }
@@ -322,12 +283,7 @@ class YamlConfiguration {
       } else if (value is List<dynamic>) {
         string += '$tab- $value:\n';
         string += '${_convertListString(value, order + 1)}\n';
-        //is Yamlble
-      } else if (value is Yamlble) {
-        string += '$tab- $value:\n';
-        string += '${_convertMapString(value.toYaml(), order + 1)}\n';
-        //is another
-      } else {
+      }  else {
         string += '$tab- $value\n';
       }
 

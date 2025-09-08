@@ -1,3 +1,6 @@
+## 1.1.5
+- [Class] yamlble.Yamlble - Removed
+
 ## 1.1.4
 - [Class] yamlble.Yamlble - Moved
 - 

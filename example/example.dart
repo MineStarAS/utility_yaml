@@ -9,7 +9,5 @@ main() {
   print(yaml.getList('list'));
   print(yaml.getMap('map'));
 
-  yaml.put('copy', [1, 2, 3, 4, 5]);
-
   yaml.saveToPath('example/configCopy.yml');
 }
